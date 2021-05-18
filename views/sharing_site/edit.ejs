@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        .layui-top-box {
+            padding: 40px 20px 20px 20px;
+            color: #fff
+        }
+
+        .panel {
+            margin-bottom: 17px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+        }
+
+        .panel-body {
+            padding: 15px
+        }
+
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 14px;
+            color: inherit
+        }
+
+        .label {
+            display: inline;
+            padding: .2em .6em .3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
+            margin-top: .3em;
+        }
+
+        .layui-red {
+            color: red
+        }
+
+        .main_btn > p {
+            height: 40px;
+        }
+
+
+        .info {
+            padding: .75rem 1.25rem;
+            margin-top: 10rem;
+            margin-right: 10rem;
+            margin-bottom: 1rem;
+            border-radius: .25rem;
+            position: absolute;
+            top: 1rem;
+            background-color: white;
+            width: auto;
+            min-width: 10rem;
+            border-width: 0;
+            right: 1rem;
+            box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+        }
+
+        .searchBar {
+            padding: .75rem 1.25rem;
+            margin-top: 13rem;
+            margin-right: 10rem;
+            margin-bottom: 1rem;
+            border-radius: .25rem;
+            position: absolute;
+            top: 1rem;
+            background-color: white;
+            width: auto;
+            min-width: 10rem;
+            border-width: 0;
+            right: 1rem;
+            box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+        }
+
+        .input-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border-radius: .25rem;
+            width: 14rem;
+            border-width: 0;
+            border-radius: 0.4rem;
+            box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+            position: fixed;
+            bottom: 0.8rem;
+            right: 1rem;
+            -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
+
+        }
+
+        .input-item {
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -ms-flex-align: center;
+            align-items: center;
+            width: 100%;
+            height: 3rem;
+        }
+
+        .btn:last-child {
+            margin-left: 1rem;
+        }
+
+        .container {
+
+            margin: 0rem 10rem;
+            height: 300px;
+        }
+
+        /* marker图标大小 */
+
+        .custom-info {
+            border: solid 1px silver;
+        }
+
+        div.info-top {
+            position: relative;
+            background: none repeat scroll 0 0 #F9F9F9;
+            border-bottom: 1px solid #CCC;
+            border-radius: 5px 5px 0 0;
+        }
+
+        div.info-top div {
+            display: inline-block;
+            color: #333333;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 31px;
+            padding: 0 10px;
+        }
+
+        div.info-top img {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            transition-duration: 0.25s;
+        }
+
+        div.info-top img:hover {
+            box-shadow: 0px 0px 5px #000;
+        }
+
+        div.info-middle {
+            font-size: 12px;
+            padding: 10px 6px;
+            line-height: 20px;
+        }
+
+        div.info-bottom {
+            height: 0px;
+            width: 100%;
+            clear: both;
+            text-align: center;
+        }
+
+        div.info-bottom img {
+            position: relative;
+            z-index: 104;
+        }
+
+        span {
+            margin-left: 5px;
+            font-size: 11px;
+        }
+
+        .info-middle img {
+            float: left;
+            margin-right: 6px;
+        }
+
+        .amap-sug-result {
+            z-index: 100000000;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form" lay-filter="formId">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">场地名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="活动名称不能为空" placeholder="请输入活动名称" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">容纳人数</label>
+        <div class="layui-input-block">
+            <input type="text" name="capacity" lay-verify="required" lay-reqtext="容纳人数" placeholder="容纳人数" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">类型</label>
+        <div class="layui-input-block ">
+            <select name="type" lay-filter="type" lay-verify="required">
+                <option value=""></option>
+                <option value="1">类型1</option>
+                <option value="2">类型2</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">选择地图位置</label>
+    </div>
+
+
+    <div id="container" class=" container"></div>
+    <div id="myPageTop" class="searchBar">
+        <table>
+            <tr>
+                <td>
+                    <label class="layui-text">输入关键字搜索位置：</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="tipinput"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="info">
+        <p id='info'></p>
+    </div>
+    <div class="layui-form-item layui-hide">
+
+        <label class="layui-form-label required">经度</label>
+        <div class="layui-input-inline">
+            <input type="text" name="longitude" id="longitude" lay-verify="" lay-reqtext=""
+                   placeholder="点击地图选择" class="layui-input">
+        </div>
+        <label class="layui-form-label required">纬度</label>
+        <div class="layui-input-inline">
+            <input type="text" name="latitude" id="latitude" lay-verify="" lay-reqtext=""
+                   placeholder="点击地图选择" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" style="margin-top: 20px">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../..//js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+
+    //表单填充内容
+    let editData = JSON.parse(JSON.stringify(parent.window.sharing_siteEditData));
+
+
+    layui.use(['form', 'laydate'], function () {
+        let form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+
+        //填充数据
+        form.val('formId', editData);
+
+        //选择地图
+        $('#selectMap').click(function () {
+            layer.open({
+                title: '选择地点',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['80%', '90%'],
+                content: '/sharing_site/selectMap',
+            });
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            data.field.id = editData.id
+            layer.confirm('确认提交？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                $.ajax({
+                    type: "post",
+                    url: '/sharing_site/edit',
+                    data: data.field,
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                parent.layer.closeAll();
+                            });
+                            parent.layui.table.reload('currentTableId');
+                        } else {
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+    });
+    window.onLoad = function () {
+        //地图操作
+
+        let longitude_init = editData.longitude || 116.397428;
+        let latitude_init = editData.latitude || 39.90923;
+        let clickMarker_init = '';
+        let initPosition = [longitude_init, latitude_init];
+        let map = new AMap.Map('container', {
+            zoom: 13,//级别
+            center: initPosition,//中心点坐标
+            viewMode: '3D'//使用3D视图
+        });
+        //定位城市
+        showCityInfo(map);
+
+
+        //初始化标记
+        clickMarker_init = new AMap.Marker({
+            map: map,
+            icon: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png',
+            position: initPosition,
+            offset: new AMap.Pixel(-26, -60)
+        });
+        //添加标记
+        map.add(clickMarker_init);
+        //初始化 圆圈范围
+
+
+        // 缩放地图到合适的视野级别
+        map.setFitView([clickMarker_init])
+
+
+        //关键字搜索
+        //输入提示
+        var autoOptions = {
+            input: "tipinput"
+        };
+        var auto = new AMap.Autocomplete(autoOptions);
+
+        var placeSearch = new AMap.PlaceSearch({
+            map: map
+        });  //构造地点查询类
+        AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+        function select(e) {
+            placeSearch.setCity(e.poi.adcode);
+            placeSearch.search(e.poi.name);  //关键字查询查询
+        }
+
+
+        //缩放工具条
+        let toolBar = new AMap.ToolBar({
+            visible: true
+        });
+
+        map.addControl(toolBar);
+        //圆形覆盖物
+        let circle = ""
+        let clickMarker = ""
+        let circleEditor = ""
+
+        //添加地图标记
+        //添加地图标记事件
+        map.on('click', (e) => {
+            if (clickMarker_init) {
+                map.remove(clickMarker_init);
+            }
+            if (clickMarker) {
+                map.remove(clickMarker);
+            }
+
+            let marker = {};
+            marker.icon = '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png';
+            marker.position = [e.lnglat.lng, e.lnglat.lat];
+
+            window.document.getElementById("longitude").value = e.lnglat.lng;
+            window.document.getElementById("latitude").value = e.lnglat.lat;
+            // console.log(window.document.getElementById("longitude"));
+
+            clickMarker = new AMap.Marker({
+                map: map,
+                icon: marker.icon,
+                position: [marker.position[0], marker.position[1]],
+                offset: new AMap.Pixel(-26, -60)
+            });
+            //添加标记
+            map.add(clickMarker);
+            if (circle) {
+                //删除编辑半径
+                circleEditor.close();
+                //屏蔽圆圈
+                circle.hide();
+            }
+
+
+            map.setFitView([clickMarker])
+
+
+        });
+
+        //获取用户所在城市信息
+        function showCityInfo(map) {
+            AMap.plugin('AMap.Geolocation', function () {
+                var geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                    timeout: 10000,          //超过10秒后停止定位，默认：5s
+                    buttonPosition: 'RB',    //定位按钮的停靠位置
+                    buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                    zoomToAccuracy: false,   //定位成功后是否自动调整地图视野到定位点
+
+                });
+                //控制是否显示定位位置
+                // map.addControl(geolocation);
+                geolocation.getCurrentPosition(function (status, result) {
+                    console.log(result);
+                    if (status == 'complete') {
+                        document.getElementById('info').innerHTML = "您所在的城市为：" + result.addressComponent.city;
+                    } else {
+                        document.getElementById('info').innerHTML = "定位失败";
+                    }
+                });
+            });
+        }
+
+    }
+
+
+    var url = 'https://webapi.amap.com/maps?v=1.4.15&key=2fa06048ae22d31d6b37686c11b3e071&callback=onLoad&plugin=AMap.CircleEditor&plugin=AMap.CitySearch&plugin=AMap.ToolBar&plugin=AMap.Autocomplete,AMap.PlaceSearch';
+    var jsapi = document.createElement('script');
+    jsapi.charset = 'utf-8';
+    jsapi.src = url;
+    document.head.appendChild(jsapi);
+
+</script>
+</body>
+</html>

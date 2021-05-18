@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        .layui-form-select dl {
+            z-index: 99999;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form" lay-filter="formId">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入姓名" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">性别</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="1" title="男" checked="">
+            <input type="radio" name="sex" value="2" title="女">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">身份证号</label>
+        <div class="layui-input-block">
+            <input type="text" name="id_number" lay-verify="required" lay-reqtext="身份证号不能为空" placeholder="请输入身份证号"
+                   value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">电话</label>
+        <div class="layui-input-block">
+            <input type="text" name="tel" lay-verify="required" lay-reqtext="电话不能为空" placeholder="请输入电话" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">岗位</label>
+        <div class="layui-input-block">
+            <input type="text" name="position" lay-verify="required" lay-reqtext="岗位不能为空" placeholder="请输入岗位" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">类型</label>
+        <div class="layui-input-block">
+            <select name="type" lay-filter="type">
+                <option value=""></option>
+                <option value="1">在职</option>
+                <option value="2">无职</option>
+                <option value="3">流动</option>
+                <option value="4">双报到</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label required">是否生效</label>
+        <div class="layui-input-block">
+            <input type="radio" name="status" value="1" title="生效" checked="">
+            <input type="radio" name="status" value="2" title="不生效">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../..//js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['form' ], function () {
+        let form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        //表单填充内容
+        let editData = JSON.parse(JSON.stringify(parent.window.memberEditData));
+
+        //填充数据
+        form.val('formId', editData);
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            data.field.id=editData.id;
+            layer.confirm('确认提交？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                $.ajax({
+                    type: "post",
+                    url: '/member/edit',
+                    data: data.field,
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                parent.layer.closeAll();
+                            });
+                            parent.layui.table.reload('currentTableId');
+
+                        } else {
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

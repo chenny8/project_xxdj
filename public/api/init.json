@@ -1,0 +1,122 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome-1.html?t=1"
+  },
+  "logoInfo": {
+    "title": "LAYUI MINI",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "菜单",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "党员先锋",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "文章管理",
+              "href": "article",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "党群互动",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "微心愿/意见",
+              "href": "interaction",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "党员管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "党员列表",
+              "href": "member",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },{
+              "title": "注册审批",
+              "href": "member/signConfirm",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "活动管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "活动列表",
+              "href": "activity",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "共享场地管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "共享场地列表",
+              "href": "sharing_site",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "积分管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "积分规则",
+              "href": "credit",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "积分记录",
+              "href": "credit/record",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+
+          ]
+        }
+      ]
+    }
+  ]
+}

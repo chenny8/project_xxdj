@@ -1,0 +1,505 @@
+<style>
+    .layui-top-box {
+        padding: 40px 20px 20px 20px;
+        color: #fff
+    }
+
+    .panel {
+        margin-bottom: 17px;
+        background-color: #fff;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+    }
+
+    .panel-body {
+        padding: 15px
+    }
+
+    .panel-title {
+        margin-top: 0;
+        margin-bottom: 0;
+        font-size: 14px;
+        color: inherit
+    }
+
+    .label {
+        display: inline;
+        padding: .2em .6em .3em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: .25em;
+        margin-top: .3em;
+    }
+
+    .layui-red {
+        color: red
+    }
+
+    .main_btn > p {
+        height: 40px;
+    }
+
+
+    .info {
+        padding: .75rem 1.25rem;
+        margin-top: 0.1rem;
+        margin-bottom: 1rem;
+        border-radius: .25rem;
+        position: fixed;
+        top: 1rem;
+        background-color: white;
+        width: auto;
+        min-width: 10rem;
+        border-width: 0;
+        right: 1rem;
+        box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+    }
+
+    .searchBar {
+        padding: .75rem 1.25rem;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        border-radius: .25rem;
+        position: fixed;
+        top: 1rem;
+        background-color: white;
+        width: auto;
+        min-width: 10rem;
+        border-width: 0;
+        right: 1rem;
+        box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+    }
+
+    .input-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border-radius: .25rem;
+        width: 14rem;
+        border-width: 0;
+        border-radius: 0.4rem;
+        box-shadow: 0 2px 6px 0 rgba(114, 124, 245, .5);
+        position: fixed;
+        bottom: 0.8rem;
+        right: 1rem;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+
+    }
+
+    .input-item {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-align: center;
+        align-items: center;
+        width: 100%;
+        height: 3rem;
+    }
+
+    .btn:last-child {
+        margin-left: 1rem;
+    }
+
+    .container {
+
+        margin: 0rem 0.5rem;
+        height: 400px;
+    }
+
+    /* marker图标大小 */
+
+    .custom-info {
+        border: solid 1px silver;
+    }
+
+    div.info-top {
+        position: relative;
+        background: none repeat scroll 0 0 #F9F9F9;
+        border-bottom: 1px solid #CCC;
+        border-radius: 5px 5px 0 0;
+    }
+
+    div.info-top div {
+        display: inline-block;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: 31px;
+        padding: 0 10px;
+    }
+
+    div.info-top img {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        transition-duration: 0.25s;
+    }
+
+    div.info-top img:hover {
+        box-shadow: 0px 0px 5px #000;
+    }
+
+    div.info-middle {
+        font-size: 12px;
+        padding: 10px 6px;
+        line-height: 20px;
+    }
+
+    div.info-bottom {
+        height: 0px;
+        width: 100%;
+        clear: both;
+        text-align: center;
+    }
+
+    div.info-bottom img {
+        position: relative;
+        z-index: 104;
+    }
+
+    span {
+        margin-left: 5px;
+        font-size: 11px;
+    }
+
+    .info-middle img {
+        float: left;
+        margin-right: 6px;
+    }
+
+    .amap-sug-result {
+        z-index: 100000000;
+    }
+</style>
+<link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+<link rel="stylesheet" href="../../css/public.css" media="all">
+<div id="container" class=" container"></div>
+<div id="myPageTop" class="searchBar">
+    <table>
+        <tr>
+            <td>
+                <label class="layui-text">输入关键字搜索位置：</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input id="tipinput"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="info">
+    <p id='info'></p>
+</div>
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+
+
+        <div class="layui-form-item ">
+            <label class="layui-form-label required">半径</label>
+            <div class="layui-input-inline">
+                <input type="text" name="radius" id="radius" lay-verify="required" lay-reqtext="半径不能为空"
+                       placeholder="点击地图选择" value="" class="layui-input">
+            </div>
+            <label class="layui-form-label required">经度</label>
+            <div class="layui-input-inline">
+                <input type="text" name="longitude" id="longitude" lay-verify="required" lay-reqtext="经纬度不能为空"
+                       placeholder="点击地图选择" value="" class="layui-input">
+            </div>
+            <label class="layui-form-label required">纬度</label>
+            <div class="layui-input-inline">
+                <input type="text" name="latitude" id="latitude" lay-verify="required" lay-reqtext="经纬度不能为空"
+                       placeholder="点击地图选择" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确定</button>
+                <button class="layui-btn layui-btn-primary" lay-submit id="clostBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../..//js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script
+        src="https://webapi.amap.com/maps?v=1.4.15&key=2fa06048ae22d31d6b37686c11b3e071&plugin=AMap.CircleEditor"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        let form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            $ = layui.$;
+
+        //初始化坐标
+       $("#longitude").val(parent.layui.$("#longitude").val());
+       $("#latitude").val(parent.layui.$("#latitude").val());
+       $("#radius").val(parent.layui.$("#radius").val());
+
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+
+        //关闭页面
+        $('#clostBtn').click(function () {
+            parent.layer.closeAll();
+            return false;
+        })
+
+        //监听确认
+        form.on('submit(saveBtn)', function (data) {
+            layer.confirm('确认选择？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                let longitude = $("#longitude").val();
+                let radius = $("#radius").val();
+                let latitude = $("#latitude").val();
+                parent.layui.$("#longitude").val(longitude);
+                parent.layui.$("#latitude").val(latitude);
+                parent.layui.$("#radius").val(radius);
+                parent.layer.closeAll();
+            });
+            return false;
+        });
+
+
+    });
+
+    window.onLoad = function () {
+        //地图操作
+
+        let longitude_init = parent.layui.$("#longitude").val() || 116.397428;
+        let latitude_init = parent.layui.$("#latitude").val() || 39.90923;
+        let radius_init = parent.layui.$("#radius").val() || 100;
+        let clickMarker_init='';
+        let circleEditor_init='';
+        let circle_init='';
+        let initPosition = [longitude_init, latitude_init];
+        let map = new AMap.Map('container', {
+            zoom: 13,//级别
+            center: initPosition,//中心点坐标
+            viewMode: '3D'//使用3D视图
+        });
+        //判断是否已有初始坐标
+        if (!parent.layui.$("#longitude").val()) {
+            //自动定位
+            showCityInfo(map);
+
+        } else {
+            //初始化标记
+            clickMarker_init = new AMap.Marker({
+                map: map,
+                icon: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png',
+                position: initPosition,
+                offset: new AMap.Pixel(-26, -60)
+            });
+            //添加标记
+            map.add(clickMarker_init);
+            //初始化 圆圈范围
+            circle_init = new AMap.Circle({
+                center: initPosition,
+                radius: radius_init, //半径
+                borderWeight: 1,
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                strokeOpacity: 0.2,
+                fillOpacity: 0.4,
+                strokeStyle: 'solid',
+                // 线样式还支持 'dashed'
+                fillColor: '#1791fc',
+                zIndex: 50,
+            })
+
+            circle_init.setMap(map)
+            // 缩放地图到合适的视野级别
+            map.setFitView([circle_init])
+
+            circleEditor_init = new AMap.CircleEditor(map, circle_init)
+            // document.getElementById("endEdit").onclick=circleEditor.close();
+
+            circleEditor_init.on('move', function (event) {
+
+            })
+
+            circleEditor_init.on('adjust', function (event) {
+
+                document.getElementById('radius').value = event.target.Ce.radius;
+
+            })
+
+            circleEditor_init.on('end', function (event) {
+                console.log(event.target)
+
+                // event.target 即为编辑后的圆形对象
+            })
+            circleEditor_init.open();
+        }
+
+
+        //关键字搜索
+        //输入提示
+        var autoOptions = {
+            input: "tipinput"
+        };
+        var auto = new AMap.Autocomplete(autoOptions);
+
+        var placeSearch = new AMap.PlaceSearch({
+            map: map
+        });  //构造地点查询类
+        AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+        function select(e) {
+            placeSearch.setCity(e.poi.adcode);
+            placeSearch.search(e.poi.name);  //关键字查询查询
+        }
+
+
+        //缩放工具条
+        let toolBar = new AMap.ToolBar({
+            visible: true
+        });
+
+        map.addControl(toolBar);
+        //圆形覆盖物
+        let circle = ""
+        let clickMarker = ""
+        let circleEditor = ""
+
+        //添加地图标记
+        //添加地图标记事件
+        map.on('click', (e) => {
+            console.log(clickMarker_init,"aaaa");
+            //删除初始标记和圆圈
+            if (clickMarker_init) {
+
+                map.remove(clickMarker_init);
+            }
+            if (circle_init) {
+                //删除编辑半径
+                circleEditor_init.close();
+                //屏蔽圆圈
+                circle_init.hide();
+            }
+
+
+            if (clickMarker) {
+                map.remove(clickMarker);
+            }
+
+            let marker = {};
+            marker.icon = '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png';
+            marker.position = [e.lnglat.lng, e.lnglat.lat];
+            let radius = 100
+            document.getElementById('radius').value = radius;
+            document.getElementById("longitude").value = e.lnglat.lng;
+            document.getElementById("latitude").value = e.lnglat.lat;
+
+
+            clickMarker = new AMap.Marker({
+                map: map,
+                icon: marker.icon,
+                position: [marker.position[0], marker.position[1]],
+                offset: new AMap.Pixel(-26, -60)
+            });
+            //添加标记
+            map.add(clickMarker);
+            if (circle) {
+                //删除编辑半径
+                circleEditor.close();
+                //屏蔽圆圈
+                circle.hide();
+            }
+
+
+            circle = new AMap.Circle({
+                center: marker.position,
+                radius: radius, //半径
+                borderWeight: 1,
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                strokeOpacity: 0.2,
+                fillOpacity: 0.4,
+                strokeStyle: 'solid',
+                // 线样式还支持 'dashed'
+                fillColor: '#1791fc',
+                zIndex: 50,
+            })
+
+            circle.setMap(map)
+            // 缩放地图到合适的视野级别
+            map.setFitView([circle])
+
+            circleEditor = new AMap.CircleEditor(map, circle)
+            // document.getElementById("endEdit").onclick=circleEditor.close();
+
+            circleEditor.on('move', function (event) {
+
+            })
+
+            circleEditor.on('adjust', function (event) {
+
+                document.getElementById('radius').value = event.target.Ce.radius;
+
+            })
+
+            circleEditor.on('end', function (event) {
+                console.log(event.target)
+
+                // event.target 即为编辑后的圆形对象
+            })
+
+
+            circleEditor.open();
+
+        });
+
+        //获取用户所在城市信息
+        function showCityInfo(map) {
+            AMap.plugin('AMap.Geolocation', function () {
+                var geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true,//是否使用高精度定位，默认:true
+                    timeout: 10000,          //超过10秒后停止定位，默认：5s
+                    buttonPosition: 'RB',    //定位按钮的停靠位置
+                    buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                    zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+                });
+                map.addControl(geolocation);
+                geolocation.getCurrentPosition(function (status, result) {
+                    console.log(result);
+                    if (status == 'complete') {
+                        document.getElementById('info').innerHTML = "您所在的城市为：" + result.addressComponent.city;
+                    } else {
+                        document.getElementById('info').innerHTML = "定位失败";
+                    }
+                });
+            });
+        }
+
+    }
+
+
+    var url = 'https://webapi.amap.com/maps?v=1.4.15&key=2fa06048ae22d31d6b37686c11b3e071&callback=onLoad&plugin=AMap.CircleEditor&plugin=AMap.CitySearch&plugin=AMap.ToolBar&plugin=AMap.Autocomplete,AMap.PlaceSearch';
+    var jsapi = document.createElement('script');
+    jsapi.charset = 'utf-8';
+    jsapi.src = url;
+    document.head.appendChild(jsapi);
+
+
+</script>

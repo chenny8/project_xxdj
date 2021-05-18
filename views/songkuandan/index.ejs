@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style type="text/css">
+        .layui-table-cell {
+            height: auto;
+            line-height: 10px;
+            font-size: 12px;
+            padding: 0 0px;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+
+        <div class="layui-collapse" lay-filter="test">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">搜索栏</h2>
+                <div class="layui-colla-content">
+                    <div style="margin: 10px 10px 10px 10px">
+                        <form class="layui-form layui-form-pane" action="">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">送款渠道</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="channel" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">营业点代码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="market_point" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">收费方式</label>
+                                    <div class="layui-input-inline">
+                                        <select name="cash_type" lay-filter="cash_type">
+                                            <option value=""></option>
+                                            <option value="现金">现金</option>
+                                            <option value="自助终端现金">自助终端现金</option>
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">是否欠消</label>
+                                    <div class="layui-input-inline">
+                                        <select name="is_qianxiao" lay-filter="is_qianxiao">
+                                            <option value=""></option>
+                                            <option value="否">否</option>
+                                            <option value="是">是</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+
+                                    <label class="layui-form-label">开始时间</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="begin_bussiness_time" id="begin_bussiness_time" lay-verify="" placeholder="yyyy-MM-dd"
+                                               autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">结束时间</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="end_bussiness_time" id="end_bussiness_time" lay-verify="" placeholder="yyyy-MM-dd"
+                                               autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add">新增</button>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="import">导入</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 多选删除
+                </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'table','laydate'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+        //日期
+        laydate.render({
+            elem: '#begin_bussiness_time'
+        });
+        laydate.render({
+            elem: '#end_bussiness_time'
+        });
+        table.render({
+            elem: '#currentTableId',
+            url: '/songkuandan/dataList',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            totalRow: true,
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 50, title: 'ID', sort: true, totalRowText: '合计'},
+                {field: 'channel', width: 120, title: '送款渠道', sort: true},
+                {field: 'market_point', width: 150, title: '营业点代码', sort: true,},
+                {field: 'bussiness_time', width: 100, title: '业务发生时间'},
+                {field: 'cash_type', title: '交费方式', minWidth: 150,},
+                {field: 'total_money', width: 80, title: '送款总额',totalRow: true},
+                {field: 'is_qianxiao', width: 80, title: '是否欠消', sort: true,},
+                {title: '操作', minWidth: 100, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            // skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            let result = JSON.stringify(data.field);
+             //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                let index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/songkuandan/add',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'import') {
+                let index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/songkuandan/import',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                let checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                let ids = [];
+                if(data.length < 1){
+                    layer.msg("请勾选至少一行！");
+                    return false;
+                }
+                data.forEach((row) => {
+                    ids.push(row.id);
+                })
+                layer.confirm('确认删除？', function (index) {
+                    $.ajax({
+                        type: "post",
+                        url: '/songkuandan/delete',
+                        dataType: "json",
+                        data: {
+                            id: ids.toString(),
+                        },
+                        async: true,
+                        success: function (data) {
+                            if (data.code === 0) {
+                                layer.msg('删除成功', {icon: 1, time: 1000});
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+                    table.reload('currentTableId');
+                    layer.close(index);
+                });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            //行编辑处理
+            if (obj.event === 'edit') {
+                //  console.log(obj);
+                // console.log(obj.tr.find('td:eq(3)').attr('data-edit', 'text'));
+                let cols = obj.tr.find('td').length;
+                let editStatus = obj.tr.find('td:eq(8)').find('[lay-event=edit]').html();
+
+                if (editStatus === '编辑') {
+                    for (let i = 2; i < cols - 1; i++) {
+                        obj.tr.find('td:eq(' + i + ')').data('edit', true);
+                        obj.tr.find('td:eq(' + i + ')').attr('bgcolor', '#dbebfc');
+                    }
+                    obj.tr.find('td:eq(8)').find('[lay-event=edit]').html("保存");
+                } else {
+
+                    if (!obj.data.channel) {
+                        layer.msg("渠道编码为空！");
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        url: '/songkuandan/edit/' + obj.data.id,
+                        data: obj.data,
+                        dataType: "json",
+                        async: true,
+                        success: function (data) {
+                            if (data.code === 0) {
+                                layer.msg('保存成功', {icon: 1, time: 1000}, function () {
+                                    for (let i = 2; i < cols - 1; i++) {
+                                        obj.tr.find('td:eq(' + i + ')').data('edit', false);
+                                        obj.tr.find('td:eq(' + i + ')').removeAttr('bgcolor', '#dbebfc');
+                                    }
+                                    obj.tr.find('td:eq(8)').find('[lay-event=edit]').html("编辑");
+                                });
+                                //parent.layui.table.reload('currentTableId');
+
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+                }
+                return false;
+                //删除处理
+            } else if (obj.event === 'delete') {
+                console.log(obj.data);
+                layer.confirm('确认删除？', function (index) {
+                    $.ajax({
+                        type: "post",
+                        url: '/songkuandan/delete',
+                        dataType: "json",
+                        data: {
+                            id: obj.data.id
+                        },
+                        async: true,
+                        success: function (data) {
+                            if (data.code === 0) {
+                                layer.msg('删除成功', {icon: 1, time: 1000});
+                                //parent.layui.table.reload('currentTableId');
+
+                            } else {
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+                    obj.del();
+
+                    layer.close(index);
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

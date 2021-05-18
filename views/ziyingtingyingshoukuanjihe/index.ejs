@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style type="text/css">
+        .layui-table-tool {
+            background-color: #ffffff;
+        }
+
+        .layui-colla-title {
+            background-color: #FFFFFF;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 12px;
+        }
+
+        .layui-form-label {
+            width: 170px;
+        }
+
+        .layui-table-cell {
+            height: auto;
+            line-height: 15px;
+            font-size: 12px;
+            padding: 0 0px;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div class="layui-collapse" lay-filter="test">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">搜索栏</h2>
+                <div class="layui-colla-content">
+                    <div style="margin: 10px 10px 10px 10px">
+                        <form class="layui-form layui-form-pane" action="">
+                            <div class="layui-form-item">
+
+                                <label class="layui-form-label">开始时间</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="begin_bussiness_time" id="begin_bussiness_time"
+                                           lay-verify="" placeholder="yyyy-MM-dd"
+                                           autocomplete="off" class="layui-input">
+                                </div>
+                                <label class="layui-form-label">结束时间</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="end_bussiness_time" id="end_bussiness_time" lay-verify=""
+                                           placeholder="yyyy-MM-dd"
+                                           autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline">
+                                    <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin: 5px;">
+            <label>选择日期</label>
+            <div class="layui-input-inline">
+                <input type="text" name="reportDate" id="reportDate"
+                       placeholder="yyyy-MM-dd" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-normal layui-btn-sm " id="data-add-btn">新增</button>
+            </div>
+        </div>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-inline">
+                <label>报表列表</label>
+            </div>
+        </script>
+        <script type="text/html" id="secondToolBar">
+            <div class="layui-inline">
+                <label>自营厅营收款稽核报表</label>
+            </div>
+
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <table class="layui-hide" id="showDetailTable" lay-filter="showDetailTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="show">查看</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="rebuild">重新生成</a>
+        </script>
+    </div>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'table', 'laydate'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+        //日期
+        laydate.render({
+            elem: '#begin_bussiness_time'
+        });
+        laydate.render({
+            elem: '#end_bussiness_time'
+        });
+        laydate.render({
+            elem: '#reportDate',
+            trigger: 'focus',
+        });
+        table.render({
+            elem: '#currentTableId',
+            url: '/ziyingtingyingshoukuanjihe/dateList',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            totalRow: true,
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'bussiness_time', align: "center", title: '报表日期'},
+                {title: '操作', toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true,
+            skin: 'line'
+        });
+
+        table.render({
+            elem: '#showDetailTable',
+            title: '自营厅营收款稽核报表',
+            data: [],
+            toolbar: '#secondToolBar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '批量下载',
+                layEvent: 'exportData',
+                icon: 'layui-icon-download-circle'
+            }],
+            totalRow: true,
+            cols: [[
+                {field: 'sn', width: 50, title: '序号', rowspan: 2, type: 'numbers', totalRowText: '合计'},
+                {field: 'bussiness_time', width: 120, rowspan: 2, title: '业务发生时间'},
+                {field: 'branch', width: 80, rowspan: 2, title: '分公司', sort: true},
+                {field: 'unit', width: 120, rowspan: 2, title: '营业厅'},
+                {field: '', title: 'BOSS营收款', align: 'center', colspan: 16},
+                {field: '', title: '自助终端营收款', align: 'center', colspan: 6},
+                {field: 'memo', width: 80, rowspan: 2, title: '备注'},
+            ],
+                [
+                    {field: 'boss_qcqj', width: 130, title: 'BOSS营收款期初欠缴', minWidth: 150, totalRow: true},
+                    {field: 'boss_qcqjxc', width: 80, title: '期初欠缴消除', totalRow: true},
+                    {field: 'boss_total', width: 100, title: 'BOSS系统合计', totalRow: true},
+                    {field: 'boss_add', width: 80, title: '调增', totalRow: true},
+                    {field: 'boss_subtract', width: 80, title: '调减', totalRow: true},
+                    {field: 'boss_yingjiao', width: 80, title: '应缴合计', totalRow: true},
+                    {field: 'boss_cash', width: 80, title: '现金', totalRow: true},
+                    {field: 'boss_pos', width: 80, title: 'POS', totalRow: true},
+                    {field: 'boss_check', width: 80, title: '支票', totalRow: true},
+                    {field: 'boss_alipay', width: 80, title: '支付宝', totalRow: true},
+                    {field: 'boss_wechat', width: 80, title: '微信', totalRow: true},
+                    {field: 'boss_pishouhuakou', width: 80, title: '批售划扣', totalRow: true},
+                    {field: 'boss_xiaofeifenqi', width: 80, title: '消费分期', totalRow: true},
+                    {field: 'boss_benriyijiao', width: 80, title: '本日已缴合计', totalRow: true},
+                    {field: 'boss_benriqianjiao', width: 80, title: '本日欠缴', totalRow: true},
+                    {field: 'boss_qimoqianjiao', width: 80, title: '期末欠缴', totalRow: true},
+                    {field: 'atm_qcqj', width: 80, title: '期初欠缴', totalRow: true},
+                    {field: 'atm_qcqjxc', width: 80, title: '期初欠缴消除', totalRow: true},
+                    {field: 'atm_total', width: 80, title: '现金合计', totalRow: true},
+                    {field: 'atm_benriyijiao', width: 80, title: '本日已缴', totalRow: true},
+                    {field: 'atm_benriqianjiao', width: 80, title: '本日欠缴', totalRow: true},
+                    {field: 'atm_qimoqianjiao', width: 80, title: '期末欠缴', totalRow: true},
+                ]],
+            // limits: [10, 15, 20, 25, 50, 100],
+            // limit: 10,
+            page: false,
+            // skin: 'line'
+        });
+
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            let result = JSON.stringify(data.field);
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(showDetailTableFilter)', function (obj) {
+            switch (obj.event) {
+                //自定义头工具栏右侧图标 - 提示
+                case 'exportData':
+                    layer.msg("tips");
+                    layer.confirm('导出全部数据？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                        $.ajax({
+                            url: "/ziyingtingyingshoukuanjihe/exportAllDetailData",
+                            type: "post",
+                            dataType: "json",
+                            async: true,
+                            before: function (obj) {
+                                layer.msg('导出中...', {
+                                    icon: 16,
+                                    shade: 0.01,
+                                    time: 0
+                                })
+                            },
+                            success: function (res) {
+                                if (res.code === 0) {
+                                    table.exportFile('showDetailTable', res.data, 'csv');
+                                } else {
+                                    layer.msg("导出失败！");
+                                }
+                                layer.closeAll();
+                            }
+                        })
+                    });
+
+                    break;
+            }
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            let data = obj.data;
+            //行编辑处理
+            if (obj.event === 'show') {
+                table.reload('showDetailTable', {
+                    url: '/ziyingtingyingshoukuanjihe/reportData/',
+                    where: {
+                        bussiness_time: data.bussiness_time,
+                    } //设定异步数据接口的额外参数
+                });
+                return false;
+                //删除处理
+            } else if (obj.event === 'rebuild') {
+
+                let index = layer.open({
+                    title: '添加',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/ziyingtingyingshoukuanjihe/generate?generateDate=' + data.bussiness_time,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+
+            }
+        });
+
+        //点击新增按钮
+        $('#data-add-btn').on('click', function () {
+            let reportDate = $('#reportDate').val();
+            if (!reportDate) {
+                layer.msg("请选择日期！", {icon: 2})
+                return false;
+            }
+            let index = layer.open({
+                title: '添加',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['100%', '100%'],
+                content: '/ziyingtingyingshoukuanjihe/generate?generateDate=' + reportDate,
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+        });
+    });
+
+</script>
+
+</body>
+</html>

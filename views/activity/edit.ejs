@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+
+        .layui-form-select dl {
+            z-index: 99999;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form" lay-filter="formId">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">活动名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="活动名称不能为空" placeholder="请输入活动名称" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">类型</label>
+        <div class="layui-input-block ">
+            <select name="type" lay-filter="type" lay-verify="required">
+                <option value=""></option>
+                <option value="1">观看电影</option>
+                <option value="2">其他</option>
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">活动地点</label>
+        <div class="layui-input-block">
+            <input type="text" name="location" lay-verify="required" lay-reqtext="活动地点不能为空" placeholder="请输入活动地点"
+                   value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">选择地图位置</label>
+        <div class="layui-input-inline">
+            <button id="selectMap" lay-reqtext="" placeholder="" value=""
+                    class="layui-btn layui-btn-sm layui-btn-normal">选择
+            </button>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <label class="layui-form-label required">经度</label>
+        <div class="layui-input-block">
+            <input type="text" name="longitude" id="longitude" lay-verify="required" lay-reqtext="请选择地图位置"
+                   placeholder="经度" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item  layui-hide">
+        <label class="layui-form-label required">维度</label>
+        <div class="layui-input-block">
+            <input type="text" name="latitude" id="latitude" lay-verify="required" lay-reqtext="请选择地图位置"
+                   placeholder="维度" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item  ">
+        <label class="layui-form-label required">活动半径(米)</label>
+        <div class="layui-input-inline">
+            <input type="text" name="radius" id="radius" readonly lay-verify="required" lay-reqtext="请选择地图位置"
+                   placeholder="半径(米)" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">是否校验地点</label>
+        <div class="layui-input-block">
+            <input type="radio" name="location_check" value="1" title="是" checked="">
+            <input type="radio" name="location_check" value="2" title="否">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">活动时长(小时)</label>
+        <div class="layui-input-inline">
+            <input type="number" name="duration" lay-verify="required" lay-reqtext="活动时长不能为空" placeholder="请活动时长"
+                   value=""
+                   class="layui-input">
+        </div>
+        <label class="layui-form-label required">最短时长(小时)</label>
+        <div class="layui-input-inline">
+            <input type="number" name="min_duration" lay-verify="required" lay-reqtext="最短活动时长不能为空"
+                   placeholder="请输入最短活动时长" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">活动积分</label>
+        <div class="layui-input-inline">
+            <input type="text" name="credits" lay-verify="required" lay-reqtext="活动积分不能为空" placeholder="请输入活动积分"
+                   value=""
+                   class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../..//js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate', ], function () {
+        let form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        //表单填充内容
+        let editData = JSON.parse(JSON.stringify(parent.window.activityEditData));
+
+        //填充数据
+        form.val('formId', editData);
+
+        //选择地图
+        $('#selectMap').click(function (){
+            layer.open({
+                title: '选择地点',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['80%', '90%'],
+                content: '/activity/selectMap',
+            });
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            layer.confirm('确认提交？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                $.ajax({
+                    type: "post",
+                    url: '/activity/add',
+                    data: data.field,
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                parent.layer.closeAll();
+                            });
+                            parent.layui.table.reload('currentTableId');
+
+                        } else {
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

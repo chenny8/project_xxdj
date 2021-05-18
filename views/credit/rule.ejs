@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style type="text/css">
+        .layui-table-cell {
+            height: auto;
+            line-height: 10px;
+            font-size: 12px;
+            padding: 0 0px;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+
+        <div class="layui-collapse" lay-filter="test">
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">搜索栏</h2>
+                <div class="layui-colla-content">
+                    <div style="margin: 10px 10px 10px 10px">
+                        <form class="layui-form layui-form-pane" action="">
+                            <div class="layui-form-item">
+                                <div class="layui-input-inline">
+                                    <input type="text" name="name" placeholder="规则名称" autocomplete="off"
+                                           class="layui-input">
+                                </div>
+
+
+                                <div class="layui-inline">
+                                    <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                            lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改积分</a>
+        </script>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: '/credit/creditList',
+            title: '积分规则',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID', sort: true, align: "center"},
+                {field: 'name', title: '规则名称', align: "center"},
+                {field: 'credits', title: '设定积分', align: "center"},
+                {title: '操作', toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 20, 50, 100],
+            limit: 10,
+            page: true,
+            // skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            let result = JSON.stringify(data.field);
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+
+        table.on('tool(currentTableFilter)', function (obj) {
+
+            //行编辑处理
+            if (obj.event === 'edit') {
+
+                layer.prompt({title: '修改积分', formType: 0, value: obj.data.credits,}, function (val, index) {
+
+                    $.post("/credit/changeCredit", {id: obj.data.id, credits: val}, function (res) {
+                        if (res.code === 0) {
+                            layer.closeAll();
+                            layer.msg("处理成功", {icon: 1})
+                            table.reload('currentTableId');
+                        } else {
+                            layer.msg("处理失败", {icon: 2});
+                        }
+
+                    });
+
+                });
+                return false;
+
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

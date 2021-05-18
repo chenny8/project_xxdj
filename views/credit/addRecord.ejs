@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">积分变更内容</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" lay-verify="required" lay-reqtext="必填项不能为空" placeholder="请输入积分变更内容" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">获得积分</label>
+        <div class="layui-input-block">
+            <input type="number" name="credits" lay-verify="required" lay-reqtext="必填项不能为空" placeholder="请输入获得积分" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">人员</label>
+        <div class="layui-input-block ">
+            <select name="member_id" id="member_id" lay-filter="member_id" lay-verify="required" lay-search="">
+                <option value="">搜索或选择</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">规则</label>
+        <div class="layui-input-block ">
+            <select name="credits_rule_id" id="credits_rule_id" lay-filter="credits_rule_id" lay-verify="required" lay-search="">
+                <option value="">搜索或选择</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-block">
+            <input type="text" name="memo" lay-reqtext="" placeholder="" value=""
+                   class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../..//js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        let form = layui.form,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            $ = layui.$;
+
+        //选择地图
+        $('#selectMap').click(function () {
+            layer.open({
+                title: '选择地点',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['80%', '90%'],
+                content: '/activity/selectMap',
+            });
+        });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            data.field.confirmed = 1;
+            layer.confirm('确认提交？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+                $.ajax({
+                    type: "post",
+                    url: '/credit/addRecord',
+                    data: data.field,
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.code == 0) {
+                            layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                parent.layer.closeAll();
+                            });
+                            parent.layui.table.reload('currentTableId');
+                        } else {
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            });
+            return false;
+        });
+
+
+        //获取人员清单
+        $.get('/member/memberList',{limit:10000},function (res){
+            if(res.code===0){
+                $.each(res.data, function (index, item) {
+                    $('#member_id').append(new Option(item.name, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }else{
+                layui.msg('获取人员数据失败',{icon:2,time:1000})
+            }
+        });
+
+        //获取积分清单
+        $.get('/credit/creditList',{limit:10000},function (res){
+            if(res.code===0){
+                $.each(res.data, function (index, item) {
+                    $('#credits_rule_id').append(new Option(item.name, item.id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }else{
+                layui.msg('获取积分规则数据失败',{icon:2,time:1000})
+            }
+        });
+    });
+</script>
+</body>
+</html>

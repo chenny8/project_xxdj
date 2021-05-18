@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style type="text/css">
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 12px;
+        }
+
+        .layui-table-cell {
+            height: auto;
+            line-height: 15px;
+            font-size: 12px;
+            padding: 0 0px;
+            overflow: visible;
+            text-overflow: inherit;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-inline">
+
+                <label class="layui-text">生成日期：<%= generateDate %></label>
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="save">保存</button>
+            </div>
+
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+    </div>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'table', 'laydate'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            laydate = layui.laydate,
+            table = layui.table;
+        //日期
+        laydate.render({
+            elem: '#begin_bussiness_time'
+        });
+        laydate.render({
+            elem: '#end_bussiness_time'
+        });
+        table.render({
+            elem: '#currentTableId',
+            url: '/ziyingtingyingshoukuanjihe/data/' + '<%= generateDate %>',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            totalRow: true,
+            cols: [[
+                {field: 'sn', width: 50, title: '序号', rowspan: 2, type: 'numbers', totalRowText: '合计'},
+                {field: 'bussiness_time', width: 120, rowspan: 2, title: '业务发生时间'},
+                {field: 'branch', width: 80, rowspan: 2, title: '分公司', sort: true},
+                {field: 'unit', width: 120, rowspan: 2, title: '营业厅'},
+                {field: '', title: 'BOSS营收款', align: 'center', colspan: 16},
+                {field: '', title: '自助终端营收款', align: 'center', colspan: 6},
+                {field: 'memo', width: 80, rowspan: 2, title: '备注', edit: 'text'},
+            ],
+                [
+                    {field: 'boss_qcqj', width: 130, title: 'BOSS营收款期初欠缴', minWidth: 150, totalRow: true, edit: 'text'},
+                    {field: 'boss_qcqjxc', width: 80, title: '期初欠缴消除', totalRow: true, edit: 'text'},
+                    {field: 'boss_total', width: 100, title: 'BOSS系统合计', totalRow: true, edit: 'text'},
+                    {field: 'boss_add', width: 80, title: '调增', totalRow: true, edit: 'text'},
+                    {field: 'boss_subtract', width: 80, title: '调减', totalRow: true, edit: 'text'},
+                    {field: 'boss_yingjiao', width: 80, title: '应缴合计', totalRow: true},
+                    {field: 'boss_cash', width: 80, title: '现金', totalRow: true, edit: 'text'},
+                    {field: 'boss_pos', width: 80, title: 'POS', totalRow: true, edit: 'text'},
+                    {field: 'boss_check', width: 80, title: '支票', totalRow: true, edit: 'text'},
+                    {field: 'boss_alipay', width: 80, title: '支付宝', totalRow: true, edit: 'text'},
+                    {field: 'boss_wechat', width: 80, title: '微信', totalRow: true, edit: 'text'},
+                    {field: 'boss_pishouhuakou', width: 80, title: '批售划扣', totalRow: true, edit: 'text'},
+                    {field: 'boss_xiaofeifenqi', width: 80, title: '消费分期', totalRow: true, edit: 'text'},
+                    {field: 'boss_benriyijiao', width: 80, title: '本日已缴合计', totalRow: true},
+                    {field: 'boss_benriqianjiao', width: 80, title: '本日欠缴', totalRow: true},
+                    {field: 'boss_qimoqianjiao', width: 80, title: '期末欠缴', totalRow: true},
+                    {field: 'atm_qcqj', width: 80, title: '期初欠缴', totalRow: true, edit: 'text'},
+                    {field: 'atm_qcqjxc', width: 80, title: '期初欠缴消除', totalRow: true, edit: 'text'},
+                    {field: 'atm_total', width: 80, title: '现金合计', totalRow: true, edit: 'text'},
+                    {field: 'atm_benriyijiao', width: 80, title: '本日已缴', totalRow: true, edit: 'text'},
+                    {field: 'atm_benriqianjiao', width: 80, title: '本日欠缴', totalRow: true},
+                    {field: 'atm_qimoqianjiao', width: 80, title: '期末欠缴', totalRow: true},
+                ]],
+            // limits: [10, 15, 20, 25, 50, 100],
+            // limit: 10,
+            page: false,
+            // skin: 'line'
+        });
+
+        // 监听搜索操作
+
+        /**
+         * toolbar监听事件
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            let bussiness_date = '<%= generateDate %>';
+            let data = table.cache['currentTableId'];
+            if (obj.event === 'save') {  // 监听添加操作
+                layer.confirm('确认保存？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+
+                    $.ajax({
+                        type: "post",
+                        url: '/ziyingtingyingshoukuanjihe/save',
+                        data: {
+                            bussiness_date: bussiness_date,
+                            data: JSON.stringify(data),
+                            override: false
+                        },
+                        dataType: "json",
+                        async: true,
+                        beforeSend: function () {
+                            layer.msg('处理中...', {
+                                icon: 16,
+                                shade: 0.01,
+                                time: 0
+                            })
+                        },
+                        success: function (res) {
+                            if (res.code === 0) {
+                                layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                    parent.layer.closeAll();
+                                });
+                                parent.layui.table.reload('currentTableId');
+
+                            } else {
+                                layer.confirm('已存在记录，是否覆盖？', {btn: ['确定', '取消'], title: "提示"}, function (index) {
+
+                                    $.ajax({
+                                        type: "post",
+                                        url: '/ziyingtingyingshoukuanjihe/save',
+                                        data: {
+                                            bussiness_date: bussiness_date,
+                                            data: JSON.stringify(data),
+                                            override: true
+                                        },
+                                        dataType: "json",
+                                        async: true,
+                                        beforeSend: function () {
+                                            layer.msg('处理中...', {
+                                                icon: 16,
+                                                shade: 0.01,
+                                                time: 0
+                                            })
+                                        },
+                                        success: function (res) {
+                                            if (res.code === 0) {
+                                                layer.msg('操作成功', {icon: 1, time: 1000}, function () {
+                                                    parent.layer.closeAll();
+                                                });
+                                                parent.layui.table.reload('currentTableId');
+
+                                            } else {
+                                                layer.msg(res.msg, {icon: 2});
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        /**
+         * 单元格计算
+         */
+        table.on('edit(currentTableFilter)', function (obj) {
+            let row = obj.data;
+            row.boss_yingjiao = parseFloat(row.boss_total) + parseFloat(row.boss_add) - parseFloat(row.boss_subtract);
+            row.boss_benriyijiao = parseFloat(row.boss_cash) + parseFloat(row.boss_pos) + parseFloat(row.boss_check) + parseFloat(row.boss_alipay) + parseFloat(row.boss_wechat) + parseFloat(row.boss_pishouhuakou) + parseFloat(row.boss_xiaofeifenqi);
+            row.boss_benriqianjiao = parseFloat(row.boss_yingjiao) - parseFloat(row.boss_benriyijiao);
+            row.boss_qimoqianjiao = parseFloat(row.boss_qcqj) - parseFloat(row.boss_qcqjxc) + parseFloat(row.boss_benriqianjiao);
+            row.atm_benriqianjiao = parseFloat(row.atm_total) - parseFloat(row.atm_benriyijiao);
+            row.atm_qimoqianjiao = parseFloat(row.atm_qcqj) - parseFloat(row.atm_qcqjxc) + parseFloat(row.atm_benriqianjiao);
+            console.log(row);
+            obj.update(obj.data);
+        })
+
+    });
+
+</script>
+
+</body>
+</html>
